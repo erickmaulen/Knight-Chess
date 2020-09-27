@@ -30,38 +30,15 @@ class OwervanzSearchTree:
 
         begin = time.perf_counter()
 
-        while not self.timer(begin, 1):
-            #begin = time.perf_counter()
+        #while not self.timer(begin, 4):
+        for i in range(200):
             current = self.tree_policy(self.root)
-            #end = time.perf_counter()
-            #print('tree finished in: ', end-begin, " seconds")
 
             #Simulacion
-            #begin = time.perf_counter()
             delta = self.default_policy(current)
-            #end = time.perf_counter()
-            #print('default finished in: ', end-begin, " seconds")
-
-            #backUp
-            #begin = time.perf_counter()
             self.backup(current, delta)
-            #end = time.perf_counter()
 
         bestChild = self.root.best_child()
-        keyMovement = list(bestChild.actThatGotMeHere)[0]
-
-
-        keyPos = self.root.state.myPieces[keyMovement]
-        keyMovedTo = [self.root.state.myPieces[keyMovement][0]+bestChild.actThatGotMeHere[keyMovement][0], self.root.state.myPieces[keyMovement][1]+bestChild.actThatGotMeHere[keyMovement][1]]
-        
-        print(keyMovement, bestChild.actThatGotMeHere[keyMovement])
-        print(keyPos, keyMovedTo)
-
-        print(self.root.state.state)
-        print(bestChild.state.state)
-
-        print(bestChild.state.state[keyMovedTo[0]][keyMovedTo[1]])
-
         return bestChild.actThatGotMeHere
 
         
@@ -83,13 +60,10 @@ class OwervanzSearchTree:
                 action[1]
             )
 
-            #print('Player: ', player, ' moves: ', key, action[0], action[1])
             if player == Player.ENEMY:
                 player = Player.PLAYER
             else:
                 player = Player.ENEMY
-
-        print('defaukl polici')
         return state.reward()
 
     def tree_policy(self, node: Node) -> Node:

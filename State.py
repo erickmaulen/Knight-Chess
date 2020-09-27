@@ -26,8 +26,6 @@ class State:
             self.state[self.state == None] = 0
             self.state = self.state.astype(int)
 
-            #self.state = np.rot90(self.state)
-
             self.myPieces = jsonState['my_knights_dict']
             self.enemyPieces = jsonState['enemy_knights_dict']
 
@@ -80,7 +78,6 @@ class State:
 
                 if (((x < 8 ) and (x >= 0)) and ((y < 8 ) and (y >= 0)) and 
                 ((self.state[x][y] < enemy+100 and self.state[x][y] >= enemy))):
-                    print("there's an enemy")
                     #Se puede colocar, lo anadimos a la lista.
                     if key not in actions:
                         actions[key] = []
@@ -119,12 +116,11 @@ class State:
 
 
     def transition(self, piece, destx, desty):
-        log = logging.getLogger()
-
         if int(piece) >= 200:
             srcPos = self.enemyPieces[piece]
         else:
             srcPos = self.myPieces[piece]
+
         destPos = [(srcPos[1]+destx), (srcPos[0]+desty)]
 
         newState = np.array(self.state, copy=True)
@@ -141,10 +137,10 @@ class State:
                 value = newState[i][j]
                 if value > 0:
                     if value >= 200: #Enemy's
-                        newEnemyPieces[str(value)] = [i,j]
+                        newEnemyPieces[str(value)] = [j,i]
                         newEnemyPiecesCount += 1
                     else: #Mines
-                        newMyPieces[str(value)] = [i,j]
+                        newMyPieces[str(value)] = [j,i]
                         newMyPiecesCount += 1
 
         asDictAll = {
@@ -152,7 +148,6 @@ class State:
             'my_knights_dict':newMyPieces,
             'enemy_knights_dict':newEnemyPieces
         }
-
 
         return State(asDictAll, myPiecesCount=newMyPiecesCount, enemyPiecesCount=newEnemyPiecesCount)
 
@@ -163,7 +158,6 @@ class State:
         return False
 
     def reward(self) -> int:
-        #if np.count_nonzero(np.logical_and(self.state < 200, self.state > 0)) > 0 and np.count_nonzero(self.state >= 200) == 0:
         if self.enemyPiecesCount == 0 and self.myPiecesCount > 0:
             return 1
         elif self.enemyPiecesCount > 0 and self.myPiecesCount == 0:

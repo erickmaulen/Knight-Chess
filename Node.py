@@ -53,8 +53,6 @@ class Node:
         if randomAction not in self.triedActions[strPiece]:
             self.triedActions[strPiece].append(randomAction)
 
-        #print(randomAction[0], randomAction[1])
-
         childNode = Node(state = self.state.transition(
                 strPiece, 
                 randomAction[0],
