@@ -36,15 +36,11 @@ moveDict = {
 
 
 if __name__ == "__main__":
-    log = logging.getLogger()
-
     jsn = json.loads(sys.argv[1])
-    #jso = open('caca.json', 'r').read()
-    #jsn = json.loads(jso)
-    #log.warning('CURRENT STATE IS: ', sys.argv[1])
 
+    #Verifica si juega con 200 o con 100.
     if int(next(iter(jsn['my_knights_dict']))) < 200:
-        player = Player.PLAYERONE
+        player = Player.PLAYERONE #ver enum.py para entender
     else:
         player = Player.PLAYERTWO
 
