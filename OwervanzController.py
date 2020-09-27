@@ -30,7 +30,7 @@ class OwervanzSearchTree:
 
         begin = time.perf_counter()
 
-        while not self.timer(begin, 2):
+        while not self.timer(begin, 1):
             #begin = time.perf_counter()
             current = self.tree_policy(self.root)
             #end = time.perf_counter()
@@ -47,7 +47,22 @@ class OwervanzSearchTree:
             self.backup(current, delta)
             #end = time.perf_counter()
 
-        return self.root.best_child().actThatGotMeHere
+        bestChild = self.root.best_child()
+        keyMovement = list(bestChild.actThatGotMeHere)[0]
+
+
+        keyPos = self.root.state.myPieces[keyMovement]
+        keyMovedTo = [self.root.state.myPieces[keyMovement][0]+bestChild.actThatGotMeHere[keyMovement][0], self.root.state.myPieces[keyMovement][1]+bestChild.actThatGotMeHere[keyMovement][1]]
+        
+        print(keyMovement, bestChild.actThatGotMeHere[keyMovement])
+        print(keyPos, keyMovedTo)
+
+        print(self.root.state.state)
+        print(bestChild.state.state)
+
+        print(bestChild.state.state[keyMovedTo[0]][keyMovedTo[1]])
+
+        return bestChild.actThatGotMeHere
 
         
     def default_policy(self, node: Node) -> int:
@@ -57,7 +72,8 @@ class OwervanzSearchTree:
 
         while not state.isFinalState():
             actions = state.get_actions(player=player)
-
+            if len(actions) <= 0:
+                print(actions)
             key = rand.sample(list(actions), 1)[0]
             action = rand.sample(actions[key], 1)[0]
 
@@ -66,12 +82,14 @@ class OwervanzSearchTree:
                 action[0], 
                 action[1]
             )
+
             #print('Player: ', player, ' moves: ', key, action[0], action[1])
             if player == Player.ENEMY:
                 player = Player.PLAYER
             else:
                 player = Player.ENEMY
 
+        print('defaukl polici')
         return state.reward()
 
     def tree_policy(self, node: Node) -> Node:

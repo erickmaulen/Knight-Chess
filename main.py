@@ -34,7 +34,7 @@ moveDict = {
 
 
 if __name__ == "__main__":
-    log = logging.getLogger()
+    #log = logging.getLogger()
 
     #jsn = json.loads(sys.argv[1])
     jso = open('caca.json', 'r').read()
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     key = list(result)[0]
     move = str(result[key][0]) + "," + str(result[key][1])
 
-    log.warning('KEY, MOVE: ', key, move)
+    #log.warning('KEY, MOVE: ', key, move)
 
 
     action = {

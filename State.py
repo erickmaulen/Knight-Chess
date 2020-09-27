@@ -4,6 +4,7 @@ import numpy as np
 import copy
 from datetime import datetime
 from enums import Player
+import logging
 
 possibleMovements =[
     [1,2],
@@ -24,6 +25,8 @@ class State:
             #CAMBIAMOS LOS NONE POR ZEROS Y CAMBIAMOS EL TIPO A INT!
             self.state[self.state == None] = 0
             self.state = self.state.astype(int)
+
+            #self.state = np.rot90(self.state)
 
             self.myPieces = jsonState['my_knights_dict']
             self.enemyPieces = jsonState['enemy_knights_dict']
@@ -72,11 +75,12 @@ class State:
             #Vertical Movements
             for movement in possibleMovements:
                 # Calculate the Movements
-                x = pos[0] + movement[0]
-                y = pos[1] + movement[1]
+                x = pos[1] + movement[0]
+                y = pos[0] + movement[1]
 
                 if (((x < 8 ) and (x >= 0)) and ((y < 8 ) and (y >= 0)) and 
                 ((self.state[x][y] < enemy+100 and self.state[x][y] >= enemy))):
+                    print("there's an enemy")
                     #Se puede colocar, lo anadimos a la lista.
                     if key not in actions:
                         actions[key] = []
@@ -96,8 +100,8 @@ class State:
                 #Vertical Movements
                 for movement in possibleMovements:
                     # Calculate the Movements
-                    x = pos[0] + movement[0]
-                    y = pos[1] + movement[1]
+                    x = pos[1] + movement[0]
+                    y = pos[0] + movement[1]
                     
                     if (((x < 8 ) and (x >= 0)) and ((y < 8 ) and (y >= 0)) and 
                     ((self.state[x][y] == 0))):
@@ -109,35 +113,22 @@ class State:
                             if key in filter and [x,y] in filter[key]:
                                 #la accion esta en el filtro
                                 continue    
-
-                        if(self.state[x][y] >= player.value and self.state[x][y] < player.value+100):
-                            print('QUE WEA??')
                         actions[key].append([movement[0],movement[1]]) # Agregamos la suma xd, poner x,y si es la pos
 
         return actions
 
 
     def transition(self, piece, destx, desty):
+        log = logging.getLogger()
+
         if int(piece) >= 200:
             srcPos = self.enemyPieces[piece]
         else:
             srcPos = self.myPieces[piece]
-
-        #print(piece, srcPos[0], srcPos[1], srcPos[0] + destx, srcPos[1] + desty)
-
-
-        #print(destx, desty, srcPos[0], srcPos[1])
-        destPos = [(srcPos[0] + destx), (srcPos[1] + desty)]
-
-        #print(destPos)
-        #if(int(piece) < 200 and int(piece) > 0):
-        #    if self.state[destPos[0]][destPos[1]] < 200 and self.state[destPos[0]][destPos[1]] < 0:
-        #        print('esto no dbertia pasar!! ', self.state[destPos[0]][destPos[1]])
-        #        print(self.state)
-
+        destPos = [(srcPos[1]+destx), (srcPos[0]+desty)]
 
         newState = np.array(self.state, copy=True)
-        newState[srcPos[0]][srcPos[1]] = 0
+        newState[srcPos[1]][srcPos[0]] = 0
         newState[destPos[0]][destPos[1]] = int(piece)
 
         newMyPieces = {}
@@ -162,11 +153,12 @@ class State:
             'enemy_knights_dict':newEnemyPieces
         }
 
+
         return State(asDictAll, myPiecesCount=newMyPiecesCount, enemyPiecesCount=newEnemyPiecesCount)
 
 
     def isFinalState(self) -> bool:
-        if np.count_nonzero(self.state >= 200) == 0 or np.count_nonzero(np.logical_and(self.state < 200, self.state > 0)) == 0:
+        if self.enemyPiecesCount == 0 or self.myPiecesCount == 0:
             return True
         return False
 
