@@ -1,0 +1,8 @@
+{
+    "ids": [[100, null, 102, 103, null, 105, 106, 107], [108, 109, 110, 111, 112, 113, 114, 115], [null, null, 101, 209, null, null, null, null], [null, null, null, null, null, null, null, 104], [null, null, null, null, null, null, null, 206], [null, null, null, null, null, null, null, null], [200, 201, 202, 203, 204, 205, null, 207], [208, null, 210, 211, 212, 213, 214, 215]], 
+    "enemy_knights": [[null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, 209, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, 206], [null, null, null, null, null, null, null, null], [200, 201, 202, 203, 204, 205, null, 207], [208, null, 210, 211, 212, 213, 214, 215]], 
+    "enemy_knights_dict": {"200": [0, 6], "201": [1, 6], "202": [2, 6], "203": [3, 6], "204": [4, 6], "205": [5, 6], "206": [7, 4], "207": [7, 6], "208": [0, 7], "209": [3, 2], "210": [2, 7], "211": [3, 7], "212": [4, 7], "213": [5, 7], "214": [6, 7], "215": [7, 7]}, 
+    "my_knights": [[100, null, 102, 103, null, 105, 106, 107], [108, 109, 110, 111, 112, 113, 114, 115], [null, null, 101, null, null, null, null, null], [null, null, null, null, null, null, null, 104], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null]], 
+    "my_knights_dict": {"100": [0, 0], "101": [2, 2], "102": [2, 0], "103": [3, 0], "104": [7, 3], "105": [5, 0], "106": [6, 0], "107": [7, 0], "108": [0, 1], "109": [1, 1], "110": [2, 1], "111": [3, 1], "112": [4, 1], "113": [5, 1], "114": [6, 1], "115": [7, 1]}, 
+    "time_less": 0.517183
+}
