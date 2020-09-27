@@ -7,6 +7,8 @@ from State import State
 import sys
 import logging 
 
+from enums import Player
+
 
 """ 
 moveDict = { #dar vuelta valores
@@ -41,7 +43,12 @@ if __name__ == "__main__":
     #jsn = json.loads(jso)
     #log.warning('CURRENT STATE IS: ', sys.argv[1])
 
-    ovc = OwervanzSearchTree(jsn)
+    if int(next(iter(jsn['my_knights_dict']))) < 200:
+        player = Player.PLAYERONE
+    else:
+        player = Player.PLAYERTWO
+
+    ovc = OwervanzSearchTree(jsn, player=player)
 
 
     result = ovc.mcts()

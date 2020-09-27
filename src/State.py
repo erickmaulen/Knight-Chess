@@ -19,7 +19,7 @@ possibleMovements =[
 
 
 class State:
-    def __init__(self, jsonState: dict, myPiecesCount=None, enemyPiecesCount=None):
+    def __init__(self, jsonState: dict, myPiecesCount=None, enemyPiecesCount=None, myPlayer=Player.PLAYERONE):
         try:
             self.state = np.array(jsonState['ids'])
             #CAMBIAMOS LOS NONE POR ZEROS Y CAMBIAMOS EL TIPO A INT!
@@ -28,6 +28,8 @@ class State:
 
             self.myPieces = jsonState['my_knights_dict']
             self.enemyPieces = jsonState['enemy_knights_dict']
+
+            self.myPlayer = myPlayer
 
             if myPiecesCount is None:
                 self.myPiecesCount = len(self.myPieces)
@@ -58,11 +60,11 @@ class State:
     def get_actions(self, player, filter=None):
         actions = dict()
 
-        if player == Player.PLAYER: 
-            enemy = 200
+        if player == self.myPlayer: 
+            enemy = Player.PLAYERTWO.value if self.myPlayer == Player.PLAYERONE else Player.PLAYERONE.value
             piecesDict = self.myPieces
         else:
-            enemy = 100
+            enemy = Player.PLAYERONE.value if self.myPlayer == Player.PLAYERONE else Player.PLAYERTWO.value
             piecesDict = self.enemyPieces
 
 
@@ -116,10 +118,13 @@ class State:
 
 
     def transition(self, piece, destx, desty):
-        if int(piece) >= 200:
-            srcPos = self.enemyPieces[piece]
-        else:
+
+        enemy = Player.PLAYERTWO if self.myPlayer == Player.PLAYERONE else Player.PLAYERONE
+        
+        if int(piece) >= self.myPlayer.value and int(piece) < self.myPlayer.value+100:
             srcPos = self.myPieces[piece]
+        else:
+            srcPos = self.enemyPieces[piece]
 
         destPos = [(srcPos[1]+destx), (srcPos[0]+desty)]
 
@@ -136,7 +141,7 @@ class State:
             for j in range(newState.shape[1]):
                 value = newState[i][j]
                 if value > 0:
-                    if value >= 200: #Enemy's
+                    if value >= enemy.value and value < enemy.value+100 : #Enemy's
                         newEnemyPieces[str(value)] = [j,i]
                         newEnemyPiecesCount += 1
                     else: #Mines
@@ -149,7 +154,7 @@ class State:
             'enemy_knights_dict':newEnemyPieces
         }
 
-        return State(asDictAll, myPiecesCount=newMyPiecesCount, enemyPiecesCount=newEnemyPiecesCount)
+        return State(asDictAll, myPiecesCount=newMyPiecesCount, enemyPiecesCount=newEnemyPiecesCount, myPlayer=self.myPlayer)
 
 
     def isFinalState(self) -> bool:
@@ -157,10 +162,37 @@ class State:
             return True
         return False
 
-    def reward(self) -> int:
+    def reward(self, player=Player.PLAYERONE) -> int:
+        #Who Won
         if self.enemyPiecesCount == 0 and self.myPiecesCount > 0:
             return 1
         elif self.enemyPiecesCount > 0 and self.myPiecesCount == 0:
             return -1
+        
+        
+        rewardMatrix = np.array(
+            [
+                [-50,-40,-30,-30,-30,-30,-40,-50],
+                [-40,-20,  0,  0,  0,  0,-20,-40],
+                [-30,  0, 10, 15, 15, 10,  0,-30],
+                [-30,  5, 15, 20, 20, 15,  5,-30],
+                [-30,  0, 15, 20, 20, 15,  0,-30],
+                [-30,  5, 10, 15, 15, 10,  5,-30],
+                [-40,-20,  0,  5,  5,  0,-20,-40],
+                [-50,-40,-30,-30,-30,-30,-40,-50]
+            ]
+        )
 
-        return 0
+        totalReward = 0
+        for piece in self.myPieces:
+            pos = self.myPieces[piece]
+            totalReward += rewardMatrix[pos[0]][pos[1]] * 0.002
+
+        for piece in self.enemyPieces:
+            pos = self.enemyPieces[piece]
+            totalReward += rewardMatrix[pos[0]][pos[1]]*-0.002
+
+
+        totalReward += (self.myPiecesCount - self.enemyPiecesCount) 
+        
+        return totalReward

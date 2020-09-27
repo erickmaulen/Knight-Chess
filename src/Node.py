@@ -10,7 +10,7 @@ from enums import Player
 from State import State
 
 class Node:
-    def __init__(self, state: State, father=None, action={}, player=Player.PLAYER):
+    def __init__(self, state: State, father=None, action={}, player=Player.PLAYERONE):
         self.state              = state
         self.triedActions       = dict()
         self.children           = []
@@ -60,7 +60,7 @@ class Node:
             ),
             father = self,
             action = {strPiece:randomAction},
-            player = Player.ENEMY if self.currentPlayer == Player.PLAYER else Player.PLAYER
+            player = Player.PLAYERTWO if self.currentPlayer == Player.PLAYERONE else Player.PLAYERONE
         )
 
         self.children.append(childNode)
@@ -72,6 +72,8 @@ class Node:
         cont = 0
         bestChild : Node
         bestUCT = -10000000
+
+        multiplier = 1 if self.currentPlayer == self.state.myPlayer else -1
         
         for child in self.children:
             #Constantes
@@ -80,14 +82,14 @@ class Node:
             #Variables
             N_v = self.visit
             N_v1 = child.visit
-            Q_v = child.winner
+            Q_v = child.winner*multiplier
 
             #calculos
             if N_v1 != 0:
                 term1 = (Q_v / N_v1)
                 term2 = c*(np.sqrt(2*((np.log(N_v))/N_v1)) )
 
-                child.uct = term1+term2
+                child.uct = (term1+term2)
             else:
                 child.uct = np.inf
         

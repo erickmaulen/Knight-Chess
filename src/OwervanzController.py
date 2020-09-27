@@ -11,18 +11,10 @@ from State import State
 import time
 
 class OwervanzSearchTree:
-    def __init__(self, stateDict = None):
+    def __init__(self, stateDict = None, player=Player.PLAYERONE):
         if stateDict is None:
-            self.root : Node
-        else:
-            self.root = Node(State(stateDict), player=Player.PLAYER)
-
-    def timer(self, begin, stop):
-        current = time.perf_counter()
-        if current-begin >= stop:
-            return True
-        else:
-            return False
+            raise Exception("CAN'T INITIALIZE WITHOUT A DICTIONARY!")
+        self.root = Node(State(stateDict, myPlayer=player), player=player)
 
     def mcts(self, state = None):
         if state is not None:
@@ -30,8 +22,7 @@ class OwervanzSearchTree:
 
         begin = time.perf_counter()
 
-        #while not self.timer(begin, 4):
-        for i in range(200):
+        for i in range(150):
             current = self.tree_policy(self.root)
 
             #Simulacion
@@ -60,10 +51,10 @@ class OwervanzSearchTree:
                 action[1]
             )
 
-            if player == Player.ENEMY:
-                player = Player.PLAYER
+            if player == Player.PLAYERTWO:
+                player = Player.PLAYERONE
             else:
-                player = Player.ENEMY
+                player = Player.PLAYERONE
         return state.reward()
 
     def tree_policy(self, node: Node) -> Node:
@@ -78,10 +69,6 @@ class OwervanzSearchTree:
     def backup(self, node, delta):
         while node is not None:
             node.visit  += 1
-            if node.currentPlayer == Player.ENEMY:
-                delta = abs(delta)*-1
-            else:
-                delta = abs(delta)
 
             node.winner += node.state.reward() + delta
 
