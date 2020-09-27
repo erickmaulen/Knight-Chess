@@ -29,3 +29,5 @@ Reward = (puntajePosicionJugador - puntajePosicionEnemigo) + (piezasJugador - pi
 ```
 
 ## Presentacion del Desafio Knight-Chess
+
+https://drive.google.com/file/d/1MJ5kisGuE543-q6qSNru1yoOdFqTEyfX/view?usp=sharing
