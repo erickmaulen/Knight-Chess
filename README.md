@@ -23,15 +23,9 @@ Dónde cada posición corresponderá a un puntaje, para el jugador actual será 
 ```
 Además de esta evaluación, tenemos una que será la diferencia de las piezas, dónde será positiva si favorece al jugador, caso contrario negativa.
 
-Si es una jugada final, dará como resultado un +1 en caso de ganar, -1 en caso de perder.
-
 En resumen, la evaluación será:
 ```
-Si juego aun no terminado:
-	= Posicion + Diferencia
-Si juego terminado:
-	Si gane = 1
-	sino = -1
+Reward = puntajePosicion + (piezasJugador - piezasEnemigo)
 ```
 
 ## Presentacion del Desafio Knight-Chess
