@@ -25,7 +25,7 @@ Además de esta evaluación, tenemos una que será la diferencia de las piezas, 
 
 En resumen, la evaluación será:
 ```
-Reward = puntajePosicion + (piezasJugador - piezasEnemigo)
+Reward = (puntajePosicionJugador - puntajePosicionEnemigo) + (piezasJugador - piezasEnemigo)
 ```
 
 ## Presentacion del Desafio Knight-Chess
